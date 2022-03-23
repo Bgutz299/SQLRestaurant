@@ -44,19 +44,10 @@ public class SQLDatabaseConnection {
         		+ "WHERE ID = (SELECT MIN(ID) FROM [dbo].[Menu_Items])"
         		+ "SELECT * FROM [dbo].[Menu_Items];";
 
-        ResultSet resultSet = null;
-
         try (Connection connection = DriverManager.getConnection(connectionUrl);
                 PreparedStatement prepsInsertMenuItem = connection.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS);) {
 
         	prepsInsertMenuItem.execute();
-            // Retrieve the generated key from the insert.
-            resultSet = prepsInsertMenuItem.getGeneratedKeys();
-
-            // Print the ID of the inserted row.
-            while (resultSet.next()) {
-                System.out.println("Generated: " + resultSet.getString(1));
-            }
         }
         // Handle any errors that may have occurred.
         catch (Exception e) {
@@ -64,7 +55,7 @@ public class SQLDatabaseConnection {
         }
     }
     public void Delete(String name, int ID) {
-    	 String deleteSql = "DELETE FROM dbo.Menu_Items WHERE " + "ID = " + ID + " " + "AND " + "NAME = " + name;
+    	 String deleteSql = "DELETE FROM dbo.Menu_Items WHERE " + "ID = " + ID + " " + "AND " + "NAME = " + "'" + name + "'";
 
          try (Connection connection = DriverManager.getConnection(connectionUrl);
                  PreparedStatement prepsDeleteMenuItem = connection.prepareStatement(deleteSql, Statement.RETURN_GENERATED_KEYS);) {
