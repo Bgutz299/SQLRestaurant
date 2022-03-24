@@ -77,30 +77,53 @@ public class SQLDatabaseConnection {
     public void Delete(String name, int ID, Scanner input) {
          try (Connection connection = DriverManager.getConnection(connectionUrl);
                  Statement DeleteMenuItem = connection.createStatement();) {
-        	if(Select(name, ID)) {
-	        	String deleteSql = "DELETE FROM [dbo].[Menu_Items] WHERE " + "Name = " + "'" + name + "'" + "AND " + "ID = " + ID + ";";
-	        	while(true) {
-		        	System.out.println("Are you sure you would like to delete this entry? Y/N");
-		        	input = new Scanner(System.in);
-		        	switch(input.next()) {
-		        		case "y":
-		        		case "Y":
-		                 	DeleteMenuItem.executeUpdate(deleteSql);
-		                 	System.out.println("Deleted Successfully.");
-		        			break;
-		        		case "n":
-		        		case "N":
-		        			System.out.println("Delete Aborted.");
-		        			break;
-		        		default:
+        	if(ID == 0) {
+        		if(Select(name, ID)) {
+        			while(true) {
+		        		System.out.println("What is the ID of the entry you would like to delete?");
+		        		input = new Scanner(System.in);
+		        		try {
+		        			ID = input.nextInt();
+		        		}catch(Exception e){
 		        			continue;
-		        			
-		        	}
-		        	break;
-	        	}
+		        		}
+		        		if(ID == 0) {
+		        			continue;
+		        		}else {
+		        			if(Select(name,ID)) {
+		        				break;
+		        			}else {
+		        				continue;
+		        			}
+		        		}
+        			}
+        		}else {
+        			return;
+        		}
+        	}else {
+        		if(!Select(name, ID)) {
+        			return;
+        		}
         	}
-        	else {
-        		
+        	String deleteSql = "DELETE FROM [dbo].[Menu_Items] WHERE " + "Name = " + "'" + name + "'" + "AND " + "ID = " + ID + ";";
+        	while(true) {
+        		System.out.println("Are you sure you would like to delete this entry? Y/N");
+        		input = new Scanner(System.in);
+        		switch(input.next()) {
+        		case "y":
+        		case "Y":
+        			DeleteMenuItem.executeUpdate(deleteSql);
+        			System.out.println("Deleted Successfully.");
+        			break;
+        		case "n":
+        		case "N":
+        			System.out.println("Delete Aborted.");
+        			break;
+        		default:
+        			continue;
+
+        		}
+        		break;
         	}
          }
          // Handle any errors that may have occurred.
